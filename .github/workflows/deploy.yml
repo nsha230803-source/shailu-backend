@@ -1,4 +1,4 @@
- name: Build and Deploy to Cloud Run
+name: Build and Deploy to Cloud Run
 
 on:
   push:
@@ -30,20 +30,16 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Configure Docker
+      - name: Build and Push Docker Image (Cloud Build)
         run: |
-          gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
-
-
-      - name: Build and Push Docker Image
-         run: |
           gcloud builds submit \
-            --tag $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/$IMAGE:latest
+            --tag ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/${IMAGE}:latest
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy $SERVICE \
-            --image $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/$IMAGE:latest \
-            --region $REGION \
+          gcloud run deploy ${SERVICE} \
+            --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/${IMAGE}:latest \
+            --region ${REGION} \
             --platform managed \
             --allow-unauthenticated
+
