@@ -1,4 +1,4 @@
-name: Build and Deploy to Cloud Run
+ name: Build and Deploy to Cloud Run
 
 on:
   push:
@@ -32,10 +32,11 @@ jobs:
 
       - name: Configure Docker
         run: |
-          gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
+          gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
+
 
       - name: Build and Push Docker Image
-        run: |
+         run: |
           gcloud builds submit \
             --tag $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/$IMAGE:latest
 
