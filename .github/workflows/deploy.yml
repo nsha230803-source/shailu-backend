@@ -7,7 +7,6 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  REGION: ${{ secrets.GCP_REGION }}
   SERVICE: ${{ secrets.CLOUD_RUN_SERVICE }}
   REPO: ${{ secrets.ARTIFACT_REPO }}
   IMAGE: shailu-backend
@@ -32,20 +31,21 @@ jobs:
 
       - name: Configure Docker
         run: |
-          gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
+          gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
       - name: Build Docker image
         run: |
-          docker build -t ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/${IMAGE}:latest .
+          docker build -t us-central1-docker.pkg.dev/${PROJECT_ID}/${REPO}/${IMAGE}:latest .
 
       - name: Push Docker image
         run: |
-          docker push ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/${IMAGE}:latest
+          docker push us-central1-docker.pkg.dev/${PROJECT_ID}/${REPO}/${IMAGE}:latest
 
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${SERVICE} \
-            --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/${IMAGE}:latest \
-            --region ${REGION} \
+            --image us-central1-docker.pkg.dev/${PROJECT_ID}/${REPO}/${IMAGE}:latest \
+            --region us-central1 \
             --platform managed \
             --allow-unauthenticated
+
